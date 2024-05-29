@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>File Upload</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="header">Upload a File</h1>
+        <form id="upload-form" class="upload-form" enctype="multipart/form-data">
+            <input type="file" id="file-input" class="file-input" accept=".txt, .pdf, .docx">
+            <label for="file-input" class="file-label">Choose a file</label>
+            <button type="submit" class="upload-button">Upload</button>
+        </form>
+        <div id="upload-status" class="upload-status"></div>
+    </div>
+
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Get the selected file
+            const fileInput = document.getElementById('file-input');
+            const selectedFile = fileInput.files[0];
+
+            if (selectedFile) {
+                // Create a FormData object to send the file
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+
+                // Send the file to the server for uploading
+                fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.text())
+                .then(message => {
+                    // Display the upload status
+                    document.getElementById('upload-status').textContent = message;
+                })
+                .catch(error => {
+                    console.error('Error uploading file:', error);
+                });
+            } else {
+                console.error('No file selected.');
+            }
+        });
+    </script>
+</body>
+</html>
